@@ -1,0 +1,97 @@
+import { cn } from "@/lib/utils";
+
+interface SkeletonProps {
+  className?: string;
+}
+
+export function Skeleton({ className }: SkeletonProps) {
+  return (
+    <div
+      className={cn("skeleton", className)}
+      aria-hidden="true"
+    />
+  );
+}
+
+export function DashboardSkeleton() {
+  return (
+    <div className="page-container space-y-4" aria-label="Loading dashboard…">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-7 w-48" />
+        </div>
+        <Skeleton className="h-9 w-9 rounded-full" />
+      </div>
+
+      {/* Balance card */}
+      <div className="card space-y-4">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-2 w-full rounded-full" />
+        <div className="flex justify-between">
+          <Skeleton className="h-4 w-20" />
+          <Skeleton className="h-4 w-16" />
+        </div>
+      </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-2 gap-3">
+        {[0, 1].map((i) => (
+          <div key={i} className="card space-y-2">
+            <Skeleton className="h-3 w-20" />
+            <Skeleton className="h-6 w-28" />
+          </div>
+        ))}
+      </div>
+
+      {/* Category breakdown */}
+      <div className="card space-y-3">
+        <Skeleton className="h-4 w-36" />
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="flex items-center gap-3">
+            <Skeleton className="h-8 w-8 rounded-full" />
+            <div className="flex-1 space-y-1.5">
+              <Skeleton className="h-3 w-24" />
+              <Skeleton className="h-1.5 w-full rounded-full" />
+            </div>
+            <Skeleton className="h-4 w-16" />
+          </div>
+        ))}
+      </div>
+
+      {/* Recent transactions */}
+      <div className="card space-y-3">
+        <Skeleton className="h-4 w-40" />
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="flex items-center gap-3">
+            <Skeleton className="h-10 w-10 rounded-full" />
+            <div className="flex-1 space-y-1.5">
+              <Skeleton className="h-3 w-28" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+            <Skeleton className="h-4 w-16" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function TransactionListSkeleton() {
+  return (
+    <div className="space-y-1" aria-label="Loading transactions…">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <div key={i} className="flex items-center gap-3 px-4 py-3">
+          <Skeleton className="h-10 w-10 rounded-full flex-shrink-0" />
+          <div className="flex-1 space-y-1.5">
+            <Skeleton className="h-3.5 w-32" />
+            <Skeleton className="h-3 w-20" />
+          </div>
+          <Skeleton className="h-4 w-16" />
+        </div>
+      ))}
+    </div>
+  );
+}

@@ -1,0 +1,407 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ─────────────────────────────────────────── */
+:root {
+  /* Colors */
+  --color-primary: #4F46E5;
+  --color-primary-hover: #4338CA;
+  --color-primary-light: #EEF2FF;
+  --color-success: #16A34A;
+  --color-success-light: #DCFCE7;
+  --color-warning: #F59E0B;
+  --color-warning-light: #FEF3C7;
+  --color-danger: #DC2626;
+  --color-danger-light: #FEE2E2;
+
+  /* Light theme */
+  --bg-base: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F8FAFC;
+  --bg-input: #FFFFFF;
+  --bg-muted: #F1F5F9;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --text-inverse: #FFFFFF;
+  --border-color: #E2E8F0;
+  --border-focus: #4F46E5;
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+  --shadow-card-hover: 0 4px 12px 0 rgb(0 0 0 / 0.12), 0 2px 4px -2px rgb(0 0 0 / 0.08);
+  --shadow-nav: 0 -1px 0 0 #E2E8F0;
+
+  /* Spacing / Radius */
+  --radius-card: 12px;
+  --radius-input: 8px;
+  --radius-pill: 9999px;
+
+  /* Transitions */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 250ms;
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.dark {
+  --bg-base: #0B1120;
+  --bg-card: #111827;
+  --bg-card-hover: #1F2937;
+  --bg-input: #1F2937;
+  --bg-muted: #1F2937;
+  --text-primary: #F1F5F9;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-inverse: #0F172A;
+  --border-color: #1F2937;
+  --border-focus: #6366F1;
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.2);
+  --shadow-card-hover: 0 4px 12px 0 rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-nav: 0 -1px 0 0 #1F2937;
+}
+
+/* ─── Base Reset ─────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevent flash on theme load */
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-inter), system-ui, sans-serif;
+  line-height: 1.6;
+  transition: background-color var(--duration-base) var(--ease-out),
+              color var(--duration-base) var(--ease-out);
+}
+
+/* ─── Smooth theme transition ────────────────────────────────── */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: var(--duration-base);
+  transition-timing-function: var(--ease-out);
+}
+
+/* Exceptions - don't animate transforms/opacity with theme */
+*:where(button, a, [role="button"]):not(.no-transition) {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, transform, box-shadow;
+}
+
+/* ─── Scrollbar Styling ──────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ─── Focus Rings ────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ─── Animations ─────────────────────────────────────────────── */
+@keyframes progress-fill {
+  from { width: 0%; }
+  to   { width: var(--progress-width, 0%); }
+}
+
+@keyframes fade-slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-4px); }
+}
+
+.animate-progress-fill {
+  animation: progress-fill 0.8s var(--ease-out) forwards;
+}
+.animate-fade-slide-up {
+  animation: fade-slide-up var(--duration-slow) var(--ease-out) forwards;
+}
+.animate-skeleton {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+.animate-shake {
+  animation: shake 0.4s ease-out;
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Component Classes ──────────────────────────────────────── */
+@layer components {
+  /* Cards */
+  .card {
+    @apply rounded-[12px] border bg-[var(--bg-card)] p-4;
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--duration-base) var(--ease-out),
+                transform var(--duration-base) var(--ease-out);
+  }
+  .card:hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* Inputs */
+  .input {
+    @apply w-full rounded-[8px] border px-3 py-2.5 text-sm;
+    background-color: var(--bg-input);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgb(79 70 229 / 0.15);
+  }
+  .input::placeholder {
+    color: var(--text-muted);
+  }
+  .input-error {
+    border-color: var(--color-danger) !important;
+    box-shadow: 0 0 0 3px rgb(220 38 38 / 0.12) !important;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-[8px] font-medium
+           text-sm transition-all select-none cursor-pointer;
+    min-height: 44px;
+    padding: 0 1rem;
+    transition: background-color var(--duration-fast) var(--ease-out),
+                transform var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-primary {
+    @apply btn text-white;
+    background-color: var(--color-primary);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+    box-shadow: 0 4px 12px rgb(79 70 229 / 0.3);
+  }
+
+  .btn-secondary {
+    @apply btn;
+    background-color: var(--bg-muted);
+    color: var(--text-primary);
+  }
+  .btn-secondary:hover:not(:disabled) {
+    background-color: var(--border-color);
+  }
+
+  .btn-ghost {
+    @apply btn;
+    background-color: transparent;
+    color: var(--text-secondary);
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background-color: var(--bg-muted);
+    color: var(--text-primary);
+  }
+
+  .btn-danger {
+    @apply btn text-white;
+    background-color: var(--color-danger);
+  }
+  .btn-danger:hover:not(:disabled) {
+    background-color: #B91C1C;
+    box-shadow: 0 4px 12px rgb(220 38 38 / 0.3);
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+  .badge-success {
+    @apply badge;
+    background-color: var(--color-success-light);
+    color: var(--color-success);
+  }
+  .badge-warning {
+    @apply badge;
+    background-color: var(--color-warning-light);
+    color: #92400E;
+  }
+  .badge-danger {
+    @apply badge;
+    background-color: var(--color-danger-light);
+    color: var(--color-danger);
+  }
+  .badge-primary {
+    @apply badge;
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+  }
+  .badge-muted {
+    @apply badge;
+    background-color: var(--bg-muted);
+    color: var(--text-muted);
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    @apply animate-skeleton rounded;
+    background-color: var(--bg-muted);
+  }
+
+  /* Page container */
+  .page-container {
+    @apply mx-auto w-full max-w-2xl px-4 py-6;
+  }
+
+  /* Section label */
+  .label {
+    @apply block text-sm font-medium mb-1.5;
+    color: var(--text-secondary);
+  }
+
+  /* Progress bar */
+  .progress-track {
+    @apply relative overflow-hidden rounded-full;
+    height: 8px;
+    background-color: var(--bg-muted);
+  }
+  .progress-fill {
+    @apply absolute inset-y-0 left-0 rounded-full animate-progress-fill;
+    background-color: var(--color-primary);
+  }
+}
+
+/* ─── Bottom Nav (Mobile) ────────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-nav);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 64px;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ─── Main content offset for bottom nav ────────────────────── */
+@media (max-width: 1023px) {
+  .main-content {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ─── Sidebar (Desktop) ──────────────────────────────────────── */
+@media (min-width: 1024px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 256px;
+    background-color: var(--bg-card);
+    border-right: 1px solid var(--border-color);
+    z-index: 40;
+    overflow-y: auto;
+  }
+  .main-content {
+    margin-left: 256px;
+  }
+}
+
+/* ─── FAB (Floating Action Button) ──────────────────────────── */
+.fab {
+  position: fixed;
+  bottom: calc(72px + env(safe-area-inset-bottom));
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgb(79 70 229 / 0.4);
+  transition: transform var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+  z-index: 40;
+}
+.fab:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 20px rgb(79 70 229 / 0.5);
+}
+.fab:active {
+  transform: scale(0.95);
+}
+@media (min-width: 1024px) {
+  .fab {
+    bottom: 24px;
+    right: 24px;
+  }
+}
