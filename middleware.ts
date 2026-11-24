@@ -12,6 +12,7 @@ import type { NextRequest } from "next/server";
 const { auth } = NextAuth(authConfig);
 
 const PUBLIC_PATHS = [
+  "/",
   "/login",
   "/signup",
   "/forgot-password",
@@ -23,9 +24,11 @@ export default auth(function middleware(req: NextRequest & { auth: any }) {
   const { pathname } = req.nextUrl;
 
   // Allow public paths
-  const isPublic = PUBLIC_PATHS.some(
-    (path) => pathname === path || pathname.startsWith(`${path}/`)
-  );
+  const isPublic =
+    pathname === "/" ||
+    PUBLIC_PATHS.some(
+      (path) => path !== "/" && (pathname === path || pathname.startsWith(`${path}/`))
+    );
 
   // Allow static files and Next.js internals
   const isStaticFile =
@@ -42,7 +45,8 @@ export default auth(function middleware(req: NextRequest & { auth: any }) {
 
   // Redirect to login if not authenticated
   if (!req.auth?.user) {
-    const loginUrl = new URL("/login", req.url);
+    const loginUrl = req.nextUrl.clone();
+    loginUrl.pathname = "/login";
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
